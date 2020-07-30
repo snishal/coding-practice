@@ -1,8 +1,17 @@
 #include "test_framework/generic_test.h"
 
 int SquareRoot(int k) {
-  // TODO - you fill in here.
-  return 0;
+  int l = 0, r = k;
+  while(l <= r){
+    long m = l + (r - l) / 2;
+    long m_sq = m * m;
+    if(m_sq <= k){
+      l = m + 1;
+    }else{
+      r = m - 1;
+    }
+  }
+  return l - 1;
 }
 
 int main(int argc, char* argv[]) {

@@ -10,7 +10,28 @@ struct DuplicateAndMissing {
 
 DuplicateAndMissing FindDuplicateMissing(const vector<int>& A) {
   // TODO - you fill in here.
-  return {0, 0};
+  int missing_xor_dup = 0;
+  for(int i = 0; i < A.size(); i++){
+    missing_xor_dup ^= i ^ A[i];
+  }
+
+  int differ_bit = missing_xor_dup & ~(missing_xor_dup - 1);
+  int miss_or_dup = 0;
+  for(int i = 0; i < A.size(); i++){
+    if(i & differ_bit){
+      miss_or_dup ^= i;
+    }
+    if(A[i] & differ_bit){
+      miss_or_dup ^= A[i];
+    }
+  }
+
+  for(int i = 0; i < A.size(); i++){
+    if(A[i] == miss_or_dup){
+      return {miss_or_dup, miss_or_dup ^ missing_xor_dup};
+    }
+  }
+  return {miss_or_dup ^ missing_xor_dup, miss_or_dup};
 }
 
 namespace test_framework {

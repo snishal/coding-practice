@@ -4,8 +4,20 @@
 
 BinaryTreeNode<int>* FindSuccessor(
     const unique_ptr<BinaryTreeNode<int>>& node) {
-  // TODO - you fill in here.
-  return nullptr;
+  if(node->right){
+    auto succ = node->right.get();
+    while(succ->left){
+      succ = succ->left.get();
+    }
+    return succ;
+  }
+
+  auto iter = node.get();
+  while(iter->parent && iter->parent->right.get() == iter){
+    iter = iter->parent;
+  }
+
+  return iter->parent;
 }
 int FindSuccessorWrapper(const unique_ptr<BinaryTreeNode<int>>& tree,
                          int node_idx) {

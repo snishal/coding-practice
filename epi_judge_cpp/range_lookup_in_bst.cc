@@ -11,10 +11,26 @@ struct Interval {
   int left, right;
 };
 
+void Helper(const unique_ptr<BstNode<int>>& tree, const Interval& interval, vector<int>& result){
+  if(tree){
+    if(tree->data < interval.left){
+      Helper(tree->right, interval, result);
+    }else if(tree->data > interval.right){
+      Helper(tree->left, interval, result);
+    }else{
+      Helper(tree->left, interval, result);
+      result.emplace_back(tree->data);
+      Helper(tree->right, interval, result);
+    }
+  }
+}
+
 vector<int> RangeLookupInBST(const unique_ptr<BstNode<int>>& tree,
                              const Interval& interval) {
   // TODO - you fill in here.
-  return {};
+  vector<int> result;
+  Helper(tree, interval, result);
+  return result;
 }
 void RangeLookupInBSTHelper(const unique_ptr<BstNode<int>>& tree,
                             const Interval& interval, vector<int>* result) {}

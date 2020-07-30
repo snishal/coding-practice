@@ -1,32 +1,58 @@
 #include <string>
+#include <unordered_set>
+#include <unordered_map>
+#include <map>
 
 #include "test_framework/fmt_print.h"
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
 using std::string;
+using std::unordered_set;
+using std::unordered_map;
+using std::map;
 
 class ClientsCreditsInfo {
  public:
   void Insert(const string& client_id, int c) {
     // TODO - you fill in here.
-    return;
+    Remove(client_id);
+    client_to_credit[client_id] = c - offset;
+    credit_to_clients[c - offset].insert(client_id);
   }
   bool Remove(const string& client_id) {
     // TODO - you fill in here.
-    return true;
+    auto credit_iter = client_to_credit.find(client_id);
+    if(credit_iter != client_to_credit.end()){
+      credit_to_clients[credit_iter->second].erase(client_id);
+      if(credit_to_clients[credit_iter->second].empty()){
+        credit_to_clients.erase(credit_iter->second);
+      }
+      client_to_credit.erase(credit_iter);
+      return true;
+    }
+    return false;
   }
   int Lookup(const string& client_id) const {
     // TODO - you fill in here.
-    return 0;
+    auto credit_iter = client_to_credit.find(client_id);
+    return credit_iter == client_to_credit.end() ? -1 : credit_iter->second + offset;
   }
   void AddAll(int C) {
     // TODO - you fill in here.
-    return;
+    offset += C;
   }
   string Max() const {
     // TODO - you fill in here.
-    return "";
+    auto iter = credit_to_clients.crbegin();
+    return iter == credit_to_clients.crend() || iter->second.empty()
+            ? ""
+            : *iter->second.cbegin();
   }
+
+private:
+  int offset = 0;
+  unordered_map<string, int> client_to_credit;
+  map<int, unordered_set<string>> credit_to_clients;
 };
 struct Operation {
   std::string op;

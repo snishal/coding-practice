@@ -2,6 +2,7 @@
 #include <functional>
 #include <iterator>
 #include <vector>
+#include <random>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/random_sequence_checker.h"
@@ -14,7 +15,25 @@ vector<int> OnlineRandomSample(vector<int>::const_iterator stream_begin,
                                const vector<int>::const_iterator stream_end,
                                int k) {
   // TODO - you fill in here.
-  return {};
+  vector<int> sample;
+  for(int i = 0; i < k && stream_begin != stream_end; i++){
+    sample.emplace_back(*stream_begin++);
+  }
+
+  int n = k;
+  std::default_random_engine seed((std::random_device())());
+
+  while(stream_begin != stream_end){
+    int x = *stream_begin++;
+    
+    const int i = std::uniform_int_distribution<int>{0, n}(seed);
+    if(i < k){
+      sample[i] = x;
+    }
+    ++n;
+  }
+
+  return sample;
 }
 bool OnlineRandomSamplingRunner(TimedExecutor& executor, vector<int> stream,
                                 int k) {

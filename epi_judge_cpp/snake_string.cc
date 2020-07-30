@@ -4,8 +4,21 @@
 using std::string;
 
 string SnakeString(const string& s) {
-  // TODO - you fill in here.
-  return "";
+  string snake = "";
+
+  for(int i = 1; i < s.size(); i+=4){
+    snake += s[i];
+  }
+
+  for(int i = 0; i < s.size(); i+=2){
+    snake += s[i];
+  }
+
+  for(int i = 3; i < s.size(); i+=4){
+    snake += s[i];
+  }
+
+  return snake;
 }
 
 int main(int argc, char* argv[]) {

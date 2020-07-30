@@ -4,20 +4,41 @@
 #include "test_framework/serialization_traits.h"
 #include "test_framework/test_failure.h"
 using std::length_error;
+using std::max;
+
+#define main _main
+#define ProgramConfig _ProgramConfig
+#include "stack_with_max.cc"
+#undef main
+#undef ProgramConfig
+
 
 class QueueWithMax {
+ private:
+  Stack enqueue, deque;
  public:
   void Enqueue(int x) {
-    // TODO - you fill in here.
-    return;
+    enqueue.Push(x);
   }
   int Dequeue() {
-    // TODO - you fill in here.
-    return 0;
+    if(deque.Empty()){
+      while(!enqueue.Empty()){
+        deque.Push(enqueue.Pop());
+      }
+    }
+    if(!deque.Empty()){
+      return deque.Pop();
+    }
+    throw length_error("Empty Queue");
   }
   int Max() const {
-    // TODO - you fill in here.
-    return 0;
+    if(!enqueue.Empty()){
+      return (deque.Empty() ? enqueue.Max() : max(enqueue.Max(), deque.Max()));
+    }
+    if(!deque.Empty()){
+      return deque.Max();
+    }
+    throw length_error("Empty Queue");
   }
 };
 struct QueueOp {

@@ -11,8 +11,35 @@ using std::shared_ptr;
 
 shared_ptr<PostingListNode> CopyPostingsList(
     const shared_ptr<PostingListNode>& l) {
-  // TODO - you fill in here.
-  return nullptr;
+  if(l == nullptr){
+    return l;
+  }
+  
+  shared_ptr<PostingListNode> iter = l;
+  while(iter){
+    auto new_node = make_shared<PostingListNode>(PostingListNode{iter->order, iter->next, nullptr});
+    iter->next = new_node;
+    iter = new_node->next;
+  }
+
+  iter = l;
+  while(iter){
+    if(iter->jump){
+      iter->next->jump = iter->jump->next.get();
+    }
+    iter = iter->next->next;
+  }
+
+  shared_ptr<PostingListNode> copy_list_head = l->next;
+
+  iter = l;
+  while(iter->next){
+    auto next = iter->next;
+    iter->next = next->next;
+    iter = next;
+  }
+
+  return copy_list_head;
 }
 using PostingListPtr = std::shared_ptr<PostingListNode>;
 

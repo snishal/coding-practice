@@ -4,8 +4,16 @@
 #include "test_framework/generic_test.h"
 using std::unique_ptr;
 BstNode<int>* SearchBST(const unique_ptr<BstNode<int>>& tree, int key) {
-  // TODO - you fill in here.
-  return nullptr;
+  BstNode<int>* node = tree.get();
+
+  while(node){
+    if(node->data == key){
+      break;
+    }
+
+    node = (node->data < key) ? node->right.get() : node->left.get();
+  }
+  return node;
 }
 int SearchBSTWrapper(const unique_ptr<BstNode<int>>& tree, int key) {
   auto result = SearchBST(tree, key);

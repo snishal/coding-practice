@@ -6,7 +6,29 @@ using std::vector;
 
 vector<int> InorderTraversal(const unique_ptr<BinaryTreeNode<int>>& tree) {
   // TODO - you fill in here.
-  return {};
+  vector<int> traversal;
+  const BinaryTreeNode<int> *curr = tree.get(), *prev = nullptr, *next = nullptr;
+
+  while(curr){
+    if(prev == curr->parent){
+      if(curr->left){
+        next = curr->left.get();
+      }else{
+        traversal.emplace_back(curr->data);
+        next = curr->right ? curr->right.get() : curr->parent;
+      }
+    }else if(prev == curr->left.get()){
+      traversal.emplace_back(curr->data);
+      next = curr->right ? curr->right.get() : curr->parent;
+    }else{
+      next = curr->parent;
+    }
+
+    prev = curr;
+    curr = next;
+  }
+
+  return traversal;
 }
 
 int main(int argc, char* argv[]) {

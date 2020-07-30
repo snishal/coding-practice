@@ -5,7 +5,18 @@ using std::vector;
 
 bool HasTwoSum(const vector<int>& A, int t) {
   // TODO - you fill in here.
-  return true;
+  int i = 0, j = A.size() - 1;
+  while(i <= j){
+    int sum = A[i] + A[j];
+    if(sum == t){
+      return true;
+    }else if(sum < t){
+      ++i;
+    }else{
+      --j;
+    }
+  }
+  return false;
 }
 
 int main(int argc, char* argv[]) {

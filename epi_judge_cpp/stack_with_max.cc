@@ -3,25 +3,59 @@
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
 #include "test_framework/test_failure.h"
+#include <stack>
+
 using std::length_error;
+using std::stack;
 
 class Stack {
- public:
+private:
+
+  struct MaxCount{
+    int element, count;
+  };
+
+  stack<int> elements;
+  stack<MaxCount> maxCount;
+public:
   bool Empty() const {
-    // TODO - you fill in here.
-    return true;
+    return elements.empty();
   }
   int Max() const {
-    // TODO - you fill in here.
-    return 0;
+    if(Empty()){
+      throw std::length_error("Max() : empty stack");
+    }
+    return maxCount.top().element;
   }
   int Pop() {
-    // TODO - you fill in here.
-    return 0;
+    if(Empty()){
+      throw std::length_error("Max() : empty stack");
+    }
+
+    int top = elements.top();
+    elements.pop();
+    if(top == maxCount.top().element){
+      int &frequency = maxCount.top().count;
+      --frequency;
+      if(frequency == 0){
+        maxCount.pop();
+      }
+    }
+    return top;
   }
   void Push(int x) {
-    // TODO - you fill in here.
-    return;
+    elements.push(x);
+    if(maxCount.empty()){
+      maxCount.push(MaxCount{x, 1});
+    }else{
+      auto curr_max = maxCount.top().element;
+      if(x > curr_max){
+        maxCount.push(MaxCount{x, 1});
+      }else if(x == curr_max){
+        int& frequency = maxCount.top().count;
+        ++frequency;
+      }
+    }
   }
 };
 struct StackOp {

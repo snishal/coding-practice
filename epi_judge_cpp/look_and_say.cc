@@ -3,9 +3,28 @@
 #include "test_framework/generic_test.h"
 using std::string;
 
+string next_num(string n){
+  string next = "";
+  int count = 1;
+  for(int i = 1; i < n.size(); i++){
+    if(n[i] == n[i - 1]){
+      count++;
+    }else{
+      next += std::to_string(count) + n[i-1];
+      count = 1;
+    }
+  }
+  next += std::to_string(count) + n.back();
+
+  return next;
+}
+
 string LookAndSay(int n) {
-  // TODO - you fill in here.
-  return "";
+  string num = "1";
+  for(int i = 1; i < n; i++){
+    num = next_num(num);
+  }
+  return num;
 }
 
 int main(int argc, char* argv[]) {

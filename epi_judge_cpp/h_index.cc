@@ -4,7 +4,22 @@
 using std::vector;
 int HIndex(vector<int> citations) {
   // TODO - you fill in here.
-  return 0;
+  std::sort(citations.begin(), citations.end());
+  
+  int l = 0, r = citations.size() - 1, h_idx = 0, m;
+
+  while(l <= r){
+    m = l + (r - l) * 0.5;
+    if(citations[m] >= citations.size() - m){
+      h_idx = citations.size() - m;
+      r = m - 1;
+    }else if(citations[m] < citations.size() - m){
+      l = m + 1;
+    }else{
+      r = m - 1;
+    }
+  }
+  return h_idx;
 }
 
 int main(int argc, char* argv[]) {

@@ -1,11 +1,13 @@
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 using std::string;
 using std::vector;
+using std::unordered_map;
 
 struct Subarray {
   // Represent subarray by starting and ending indices, inclusive.
@@ -14,8 +16,34 @@ struct Subarray {
 
 Subarray FindSmallestSequentiallyCoveringSubset(
     const vector<string>& paragraph, const vector<string>& keywords) {
-  // TODO - you fill in here.
-  return {0, 0};
+  unordered_map<string, int> keywords_to_idx;
+  for(int i = 0; i < keywords.size(); i++){
+    keywords_to_idx[keywords[i]] = i;
+  }
+
+  vector<int> latest_occurence(keywords.size(), -1);
+  vector<int> shortest_subarray_length(keywords.size(), std::numeric_limits<int>::max());
+
+  int shortest_dist = std::numeric_limits<int>::max();
+  Subarray min_window = {-1, -1};
+  for(int i = 0; i < paragraph.size(); i++){
+    if(keywords_to_idx.count(paragraph[i])){
+      int keyword_idx = keywords_to_idx.find(paragraph[i])->second;
+      if(keyword_idx == 0){
+        shortest_subarray_length[keyword_idx] = 1;
+      }else if(shortest_subarray_length[keyword_idx - 1] != std::numeric_limits<int>::max()){
+        shortest_subarray_length[keyword_idx] = shortest_subarray_length[keyword_idx - 1] + i - latest_occurence[keyword_idx - 1];
+      }
+      latest_occurence[keyword_idx] = i;
+
+      if(keyword_idx == keywords.size() - 1 && shortest_subarray_length.back() < shortest_dist){
+        shortest_dist = shortest_subarray_length.back();
+        min_window = {i - shortest_subarray_length.back() + 1, i};
+      }
+    }
+  }
+
+  return min_window;
 }
 int FindSmallestSequentiallyCoveringSubsetWrapper(
     TimedExecutor& executor, const vector<string>& paragraph,

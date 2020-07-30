@@ -4,8 +4,19 @@
 using std::vector;
 
 bool MatrixSearch(const vector<vector<int>>& A, int x) {
-  // TODO - you fill in here.
-  return true;
+  int r = 0, c = A.front().size() - 1;
+
+  while(r < A.size() && c >= 0){
+    if(A[r][c] == x){
+      return true;
+    }else if(A[r][c] < x){
+      r++;
+    }else {
+      c--;
+    }
+  }
+
+  return false;
 }
 
 int main(int argc, char* argv[]) {

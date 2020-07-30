@@ -7,9 +7,39 @@
 using std::string;
 using std::vector;
 
+bool IsPalindrome(const string& s){
+  int i = 0, j = s.size() - 1;
+  while(i < j){
+    if(s[i] != s[j]){
+      return false;
+    }
+    ++i, --j;
+  }
+  return true;
+}
+
+void Helper(const string& text, int offset, vector<string>& decomposition, vector<vector<string>>& decompositions){
+  if(offset == text.size()){
+    decompositions.emplace_back(decomposition);
+    return;
+  }
+
+  for(int i = offset + 1; i <= text.size(); i++){
+    string prefix = text.substr(offset, i - offset);
+    if(IsPalindrome(prefix)){
+      decomposition.emplace_back(prefix);
+      Helper(text, i, decomposition, decompositions);
+      decomposition.pop_back();
+    }
+  }
+}
+
 vector<vector<string>> PalindromeDecompositions(const string& text) {
   // TODO - you fill in here.
-  return {};
+  vector<vector<string>> decompositions;
+  vector<string> decomposition;
+  Helper(text, 0, decomposition, decompositions);
+  return decompositions;
 }
 bool Comp(vector<vector<string>> expected, vector<vector<string>> result) {
   std::sort(begin(expected), end(expected));

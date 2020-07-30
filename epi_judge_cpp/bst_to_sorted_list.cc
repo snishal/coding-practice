@@ -6,10 +6,36 @@
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 using std::shared_ptr;
+
+struct HeadTail{
+  shared_ptr<BstNode<int>> head, tail;
+};
+
+HeadTail Helper(
+    const shared_ptr<BstNode<int>>& node) {
+  if(node == nullptr){
+    return {nullptr, nullptr};
+  }
+
+  auto leftList = Helper(node->left);
+  auto rightList = Helper(node->right);
+
+  if(leftList.tail){
+    leftList.tail->right = node;
+  }
+  node->left = leftList.tail;
+
+  node->right = rightList.head;
+  if(rightList.head){
+    rightList.head->left = node;
+  }
+
+  return {leftList.head ? leftList.head : node, rightList.tail ? rightList.tail : noRde};
+}
+
 shared_ptr<BstNode<int>> BSTToDoublyLinkedList(
     const shared_ptr<BstNode<int>>& tree) {
-  // TODO - you fill in here.
-  return nullptr;
+  return Helper(tree).head;
 }
 std::vector<int> BSTToDoublyLinkedListWrapper(
     TimedExecutor& executor, const std::shared_ptr<BstNode<int>>& tree) {

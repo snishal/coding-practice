@@ -4,10 +4,49 @@
 #include "test_framework/generic_test.h"
 using std::shared_ptr;
 
+shared_ptr<ListNode<int>> ReverseList(const shared_ptr<ListNode<int>>& L){
+  shared_ptr<ListNode<int>> prev = nullptr, curr = L, next = nullptr;
+
+  while(curr){
+    next = curr->next;
+    curr->next = prev;
+    prev = curr;
+    curr = next;
+  }
+
+  return prev;
+}
+
 shared_ptr<ListNode<int>> ZippingLinkedList(
     const shared_ptr<ListNode<int>>& L) {
-  // TODO - you fill in here.
-  return nullptr;
+  if(!L && !L->next){
+    return L;
+  }
+
+  auto slow = L, fast = L;
+  while(fast && fast->next){
+    slow = slow->next;
+    fast = fast->next->next;
+  }
+
+  auto first_half_head = L, second_half_head = slow->next;
+  slow->next = nullptr;
+
+  second_half_head = ReverseList(second_half_head);
+
+  auto first_half_itr = first_half_head, second_half_itr = second_half_head;
+  while (second_half_itr){
+    auto first_half_next = first_half_itr->next, second_half_next = second_half_itr->next;
+    
+    first_half_itr->next = second_half_itr;
+    second_half_itr->next = first_half_next;
+
+    first_half_itr = first_half_next;
+    second_half_itr = second_half_next;
+  }
+  
+
+  return first_half_head;
 }
 
 int main(int argc, char* argv[]) {

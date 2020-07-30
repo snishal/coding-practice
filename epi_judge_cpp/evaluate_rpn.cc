@@ -1,10 +1,42 @@
 #include <string>
+#include <stack>
+#include <sstream>
 
 #include "test_framework/generic_test.h"
 using std::string;
+using std::stack;
+using std::stringstream;
+
 int Evaluate(const string& expression) {
-  // TODO - you fill in here.
-  return 0;
+  stack<int> operands;
+  stringstream ss(expression);
+  string token;
+  const char delimiter = ',';
+
+  while(getline(ss, token, delimiter)){
+    if(token == "+" || token == "-" || token == "*" || token == "/"){
+      int op2 = operands.top(); operands.pop();
+      int op1 = operands.top(); operands.pop();
+
+      switch (token.front()){
+        case '+':
+          operands.emplace(op1 + op2);
+          break;
+        case '-':
+          operands.emplace(op1 - op2);
+          break;
+        case '*':
+          operands.emplace(op1 * op2);
+          break;
+        case '/':
+          operands.emplace(op1 / op2);
+          break;
+      }
+    }else{
+      operands.emplace(std::stoi(token));
+    }
+  }
+  return operands.top();
 }
 
 int main(int argc, char* argv[]) {

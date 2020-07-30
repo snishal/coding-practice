@@ -6,10 +6,53 @@
 #include "test_framework/timed_executor.h"
 using std::vector;
 
+void Boundary(const unique_ptr<BinaryTreeNode<int>>& node, vector<const unique_ptr<BinaryTreeNode<int>>*>& container, bool leftBoundary){
+  if (node == nullptr ||
+      (node->left == nullptr && node->right == nullptr)) {
+    return;
+  }
+
+  if(leftBoundary){
+    container.push_back(&node);
+    if(node->left){
+      Boundary(node->left, container, leftBoundary);
+    }else{
+      Boundary(node->right, container, leftBoundary);
+    }
+  }else{
+    if(node->right){
+      Boundary(node->right, container, leftBoundary);
+    }else{
+      Boundary(node->left, container, leftBoundary);
+    }
+    container.push_back(&node);
+  }
+}
+
+void Leaves(const unique_ptr<BinaryTreeNode<int>>& node, vector<const unique_ptr<BinaryTreeNode<int>>*>& container){
+  if(node != nullptr){
+    if(node->left == nullptr && node->right == nullptr){
+      container.push_back(&node);
+    }else{
+      Leaves(node->left, container);
+      Leaves(node->right, container);
+    }
+  }
+}
+
 vector<const unique_ptr<BinaryTreeNode<int>>*> ExteriorBinaryTree(
     const unique_ptr<BinaryTreeNode<int>>& tree) {
-  // TODO - you fill in here.
-  return {};
+  if(tree == nullptr){
+    return {};
+  }
+  
+  vector<const unique_ptr<BinaryTreeNode<int>>*> exterior{&tree};
+  Boundary(tree->left, exterior, true);
+  Leaves(tree->left, exterior);
+  Leaves(tree->right, exterior);
+  Boundary(tree->right, exterior, false);
+
+  return exterior;
 }
 vector<int> CreateOutputVector(
     const vector<const unique_ptr<BinaryTreeNode<int>>*>& L) {

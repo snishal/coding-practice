@@ -1,31 +1,58 @@
 #include <vector>
 #include <unordered_map>
-#include <queue>
+#include <list>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
 #include "test_framework/test_failure.h"
 using std::unordered_map;
-using std::queue;
+using std::list;
+using std::pair;
 
 class LruCache {
  private:
+  typedef unordered_map<int, pair<list<int>::iterator, int>> Map;
   size_t capacity;
-  unordered_map<int, int> cache;
-  queue<int> window;
+  Map cache;
+  list<int> queue;
+
+  void MoveToFront(int isbn, const Map::iterator& it){
+    queue.erase(it->second.first);
+    queue.emplace_front(isbn);
+    it->second.first = queue.begin();
+  }
  public:
   LruCache(size_t capacity) {
     this->capacity = capacity;
   }
   int Lookup(int isbn) {
-    
+    auto it = cache.find(isbn);
+    if(it == cache.end()){
+      return -1;
+    }
+    MoveToFront(isbn, it);
+    return it->second.second;
   }
   void Insert(int isbn, int price) {
-    // TODO - you fill in here.
-    return;
+    auto it = cache.find(isbn);
+    if(it != cache.end()){
+      MoveToFront(isbn, it);
+    }else{
+      if(queue.size() == capacity){
+        cache.erase(queue.back());
+        queue.pop_back();
+      }
+      queue.emplace_front(isbn);
+      cache[isbn] = {queue.begin(), price};
+    }
   }
   bool Erase(int isbn) {
-    // TODO - you fill in here.
+    auto it = cache.find(isbn);
+    if(it == cache.end()){
+      return false;
+    }
+    queue.erase(it->second.first);
+    cache.erase(isbn);
     return true;
   }
 };

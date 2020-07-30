@@ -3,9 +3,20 @@
 #include "test_framework/generic_test.h"
 using std::vector;
 
+#define main _main
+#include "two_sum.cc"
+#undef main
+
 bool HasThreeSum(vector<int> A, int t) {
   // TODO - you fill in here.
-  return true;
+  std::sort(A.begin(), A.end());
+  for(const int& a : A){
+    if(HasTwoSum(A, t - a)){
+      return true;
+    }
+  }
+
+  return false;
 }
 
 int main(int argc, char* argv[]) {

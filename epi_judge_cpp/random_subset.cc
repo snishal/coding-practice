@@ -3,6 +3,7 @@
 #include <iterator>
 #include <numeric>
 #include <vector>
+#include <random>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/random_sequence_checker.h"
@@ -13,7 +14,22 @@ using std::vector;
 // Returns a random k-sized subset of {0, 1, ..., n - 1}.
 vector<int> RandomSubset(int n, int k) {
   // TODO - you fill in here.
-  return {};
+  vector<int> subset(k);
+  for(int i = 0; i < k; i++){
+    subset[i] = i;
+  }
+
+  int num_read = k;
+  std::default_random_engine seed((std::random_device())());
+  while(num_read < n){
+    int i = std::uniform_int_distribution<int>{0, num_read}(seed);
+
+    if(i < k){
+      subset[i] = num_read;
+    }
+    num_read++;
+  }
+  return subset;
 }
 bool RandomSubsetRunner(TimedExecutor& executor, int n, int k) {
   using namespace test_framework;

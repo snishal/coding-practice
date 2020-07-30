@@ -12,7 +12,21 @@ struct Interval {
 vector<Interval> AddInterval(const vector<Interval>& disjoint_intervals,
                              Interval new_interval) {
   // TODO - you fill in here.
-  return {};
+  int i = 0;
+  vector<Interval> mergedIntervals;
+
+  while(i < disjoint_intervals.size() && disjoint_intervals[i].right < new_interval.left){
+    mergedIntervals.emplace_back(disjoint_intervals[i++]);
+  }
+
+  while(i < disjoint_intervals.size() && disjoint_intervals[i].left <= new_interval.right){
+    new_interval = {std::min(new_interval.left, disjoint_intervals[i].left), std::max(new_interval.right, disjoint_intervals[i].right)};
+    i++;
+  }
+  mergedIntervals.emplace_back(new_interval);
+  mergedIntervals.insert(mergedIntervals.end(), disjoint_intervals.begin() + i, disjoint_intervals.end());
+
+  return mergedIntervals;
 }
 namespace test_framework {
 template <>

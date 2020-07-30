@@ -9,29 +9,34 @@ using std::string;
 using std::unordered_set;
 using std::vector;
 
-bool DecomposeIntoDictionaryWordsHelper(const string& domain, int offset, const unordered_set<string>& dictionary, vector<string>& sequence) {
-	if(offset == domain.size()){
-		return true;
-	}
-	for(int i = offset + 1; i <= domain.size(); i++){
-		string s1 = domain.substr(offset, i - offset);
-		std::cout << s1 << std::endl;
-		if(dictionary.count(s1) > 0){
-			sequence.push_back(s1);
-			if(DecomposeIntoDictionaryWordsHelper(domain, i, dictionary, sequence)){
-				return true;
-			}else{
-				sequence.pop_back();
-			}
-		}
-	}
-	return false;
-}
-
 vector<string> DecomposeIntoDictionaryWords(const string& domain, const unordered_set<string>& dictionary) {
-	vector<string> sequence;
-	DecomposeIntoDictionaryWordsHelper(domain, 0, dictionary, sequence);
-	return sequence;
+	vector<int> last_length(domain.size(), -1);
+
+  for(int i = 0; i < domain.size(); i++){
+    if(dictionary.find(domain.substr(0, i + 1)) != dictionary.end()){
+      last_length[i] = i + 1;
+    }
+
+    if(last_length[i] == -1){
+      for(int j = 0; j < i; j++){
+        if(last_length[j] != -1 && dictionary.find(domain.substr(j + 1, i - j)) != dictionary.end()){
+          last_length[i] = i - j;
+          break;
+        }   
+      }
+    }
+  }
+
+  vector<string> decompositions;
+  if(last_length.back() != -1){
+    int idx = domain.size() - 1;
+    while(idx >= 0){
+      decompositions.emplace_back(domain.substr(idx + 1 - last_length[idx], last_length[idx]));
+      idx -= last_length[idx];
+    }
+    std::reverse(decompositions.begin(), decompositions.end());
+  }
+  return decompositions;
 }
 void DecomposeIntoDictionaryWordsWrapper(
     TimedExecutor& executor, const string& domain,

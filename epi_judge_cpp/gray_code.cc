@@ -1,18 +1,42 @@
 #include <algorithm>
 #include <vector>
+#include <unordered_set>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 using std::vector;
+using std::unordered_set;
 
-vector<int> GrayCode(int num_bits) {
-  // TODO - you fill in here.
-  return {};
-}
 bool DiffersByOneBit(int x, int y) {
   int bit_difference = x ^ y;
   return bit_difference && !(bit_difference & (bit_difference - 1));
+}
+
+bool Helper(int num_bits, vector<int>& codes, unordered_set<int>* generated){
+  if(codes.size() == 1 << num_bits){
+    return DiffersByOneBit(codes.front(), codes.back());
+  }
+  for(int i = 0; i < num_bits; i++){
+    int recent_code = codes.back();
+    recent_code = recent_code ^ (1 << i);
+    if(!generated->count(recent_code)){
+      generated->insert(recent_code);
+      codes.emplace_back(recent_code);
+      if(Helper(num_bits, codes, generated)){
+        return true;
+      }
+      codes.pop_back();
+      generated->erase(recent_code);
+    }
+  }
+  return false;
+}
+
+vector<int> GrayCode(int num_bits) {
+  vector<int> codes({0});
+  Helper(num_bits, codes, new unordered_set<int>({0}));
+  return codes;
 }
 
 void GrayCodeWrapper(TimedExecutor& executor, int num_bits) {

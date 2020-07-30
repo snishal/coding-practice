@@ -6,12 +6,34 @@
 #include "test_framework/timed_executor.h"
 using std::unique_ptr;
 
+bool FindFromNode(const unique_ptr<BstNode<int>>& node, const unique_ptr<BstNode<int>>& target){
+  BstNode<int> *iter = node.get();
+  while(iter && iter != target.get()){
+    iter = (iter->data < target->data ? iter->right.get() : iter->left.get());
+  }
+  return iter == target.get();
+}
+
 bool PairIncludesAncestorAndDescendantOfM(
     const unique_ptr<BstNode<int>>& possible_anc_or_desc_0,
     const unique_ptr<BstNode<int>>& possible_anc_or_desc_1,
     const unique_ptr<BstNode<int>>& middle) {
   // TODO - you fill in here.
-  return true;
+  BstNode<int> *iter0 = possible_anc_or_desc_0.get(), *iter1 = possible_anc_or_desc_1.get();
+  while(iter0 != possible_anc_or_desc_1.get() && iter0 != middle.get() && iter1 != possible_anc_or_desc_0.get() && iter1 != middle.get() && (iter0 || iter1)){
+    if(iter0){
+      iter0 = (iter0->data < middle->data ? iter0->right.get() : iter0->left.get());
+    }
+    if(iter1){
+      iter1 = (iter1->data < middle->data ? iter1->right.get() : iter1->left.get());
+    }
+  }
+
+  if((iter0 != middle.get() && iter1 != middle.get()) || iter0 == possible_anc_or_desc_1.get() || iter1 == possible_anc_or_desc_0.get()){
+    return false;
+  }
+
+  return FindFromNode(middle, iter0 == middle.get() ? possible_anc_or_desc_1 : possible_anc_or_desc_0);
 }
 bool PairIncludesAncestorAndDescendantOfMWrapper(
     TimedExecutor& executor, const unique_ptr<BstNode<int>>& tree,

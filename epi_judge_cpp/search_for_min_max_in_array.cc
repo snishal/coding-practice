@@ -2,14 +2,39 @@
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
+
+#include <bits/stdc++.h>
+
 using std::vector;
+using std::pair;
 struct MinMax {
   int smallest, largest;
 };
 
 MinMax FindMinMax(const vector<int>& A) {
-  // TODO - you fill in here.
-  return {0, 0};
+  if(A.size() <= 1){
+    return {A.front(), A.front()};
+  }
+
+  pair<int, int> global = std::minmax(A[0], A[1]);
+
+  for(int i = 2; i + 1 < A.size(); i+=2){
+    pair<int, int> local = std::minmax(A[i], A[i+1]);
+
+    global = {
+      std::min(global.first, local.first),
+      std::max(global.second, local.second)
+    };
+  }
+
+  if(A.size() % 2 != 0){
+    global = {
+      std::min(global.first, A.back()),
+      std::max(global.second, A.back())
+    };
+  }
+
+  return {global.first, global.second};
 }
 namespace test_framework {
 template <>

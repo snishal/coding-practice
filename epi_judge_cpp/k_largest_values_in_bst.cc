@@ -6,9 +6,20 @@
 using std::unique_ptr;
 using std::vector;
 
+void Helper(const unique_ptr<BstNode<int>>& tree, int k, vector<int>& k_largest){
+  if(tree && k_largest.size() < k){
+    Helper(tree->right, k, k_largest);
+    if(k_largest.size() < k){
+      k_largest.emplace_back(tree->data);
+      Helper(tree->left, k, k_largest);
+    }
+  }
+}
+
 vector<int> FindKLargestInBST(const unique_ptr<BstNode<int>>& tree, int k) {
-  // TODO - you fill in here.
-  return {};
+  vector<int> k_largest;
+  Helper(tree, k, k_largest);
+  return k_largest;
 }
 
 int main(int argc, char* argv[]) {

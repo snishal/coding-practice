@@ -1,5 +1,6 @@
 #include <functional>
 #include <vector>
+#include <random>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/random_sequence_checker.h"
@@ -7,8 +8,18 @@
 using std::bind;
 using std::vector;
 vector<int> ComputeRandomPermutation(int n) {
-  // TODO - you fill in here.
-  return {};
+  vector<int> A;
+  for(int i = 1; i <= n; i++){
+    A.emplace_back(i);
+  }
+
+  std::default_random_engine seed((std::random_device())());
+  for(int i = 0; i < n; i++){
+    int k = std::uniform_int_distribution<int>{i, n - 1}(seed);
+    std::swap(A[i], A[k]); 
+  }
+
+  return A;
 }
 int Factorial(int n) { return n <= 1 ? 1 : n * Factorial(n - 1); }
 

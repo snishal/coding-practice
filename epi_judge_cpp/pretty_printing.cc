@@ -7,6 +7,7 @@ using std::vector;
 
 int MinimumMessiness(const vector<string>& words, int line_length) {
   // TODO - you fill in here.
+  
   return 0;
 }
 

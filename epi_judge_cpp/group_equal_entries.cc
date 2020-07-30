@@ -2,6 +2,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #include "test_framework/generic_test.h"
 #include "test_framework/serialization_traits.h"
@@ -9,6 +10,7 @@
 #include "test_framework/timed_executor.h"
 using std::string;
 using std::vector;
+using std::unordered_map;
 
 struct Person {
   int age;
@@ -17,7 +19,31 @@ struct Person {
 
 void GroupByAge(vector<Person>* people) {
   // TODO - you fill in here.
-  return;
+  unordered_map<int, int> age_count;
+  for(const Person& person : *people){
+    age_count[person.age]++;
+  }
+
+  unordered_map<int, int> age_offset;
+  int offset = 0;
+  for(auto& p : age_count){
+    age_offset[p.first] = offset;
+    offset += p.second;
+  }
+
+  while(!age_offset.empty()){
+    auto from = age_offset.begin();
+    auto to = age_offset.find((*people)[from->second].age);
+
+    std::swap((*people)[from->second], (*people)[to->second]);
+    --age_count[to->first];
+
+    if(age_count[to->first] > 0){
+      ++age_offset[to->first];
+    }else{
+      age_offset.erase(to->first);
+    }
+  }
 }
 
 namespace test_framework {

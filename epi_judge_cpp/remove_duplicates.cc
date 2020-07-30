@@ -9,6 +9,10 @@ using std::string;
 using std::vector;
 
 struct Name {
+  bool operator==(const Name& that) const {
+    return first_name == that.first_name;
+  }
+
   bool operator<(const Name& that) const {
     return first_name != that.first_name ? first_name < that.first_name
                                          : last_name < that.last_name;
@@ -17,8 +21,8 @@ struct Name {
   string first_name, last_name;
 };
 void EliminateDuplicate(vector<Name>* names) {
-  // TODO - you fill in here.
-  return;
+  std::sort(names->begin(), names->end());
+  names->erase(std::unique(names->begin(), names->end()), names->end());
 }
 
 namespace test_framework {

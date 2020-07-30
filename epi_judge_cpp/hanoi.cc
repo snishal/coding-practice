@@ -10,9 +10,19 @@ using std::array;
 using std::stack;
 using std::vector;
 const int kNumPegs = 3;
+
+void Helper(int n, int source, int destination, int through, vector<vector<int>>& sequence){
+  if(n > 0){
+    Helper(n - 1, source, through, destination, sequence);
+    sequence.push_back({source, destination});
+    Helper(n - 1, through, destination, source, sequence);
+  }
+}
+
 vector<vector<int>> ComputeTowerHanoi(int num_rings) {
-  // TODO - you fill in here.
-  return {};
+  vector<vector<int>> sequence;
+  Helper(num_rings, 0, 1, 2, sequence);
+  return sequence;
 }
 void ComputeTowerHanoiWrapper(TimedExecutor& executor, int num_rings) {
   array<stack<int>, kNumPegs> pegs;

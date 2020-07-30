@@ -6,8 +6,18 @@
 using std::vector;
 
 int SearchEntryEqualToItsIndex(const vector<int>& A) {
-  // TODO - you fill in here.
-  return 0;
+  int l = 0, r = A.size() - 1, m;
+  while(l <= r){
+    m = l + (r - l) / 2;
+    if(A[m] == m){
+      return m;
+    }else if(A[m] < m){
+      l = m + 1;
+    }else{
+      r = m - 1;
+    }
+  }
+  return -1;
 }
 void SearchEntryEqualToItsIndexWrapper(TimedExecutor& executor,
                                        const vector<int>& A) {

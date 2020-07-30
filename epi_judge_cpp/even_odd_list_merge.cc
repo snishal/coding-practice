@@ -1,8 +1,29 @@
 #include "list_node.h"
 #include "test_framework/generic_test.h"
+
+#include <array>
+using std::array;
+
 shared_ptr<ListNode<int>> EvenOddMerge(const shared_ptr<ListNode<int>>& L) {
-  // TODO - you fill in here.
-  return nullptr;
+  if(L == nullptr){
+    return nullptr;
+  }
+
+  auto even_dummy_head = make_shared<ListNode<int>>(ListNode<int>{0, nullptr}), 
+        odd_dummy_head = make_shared<ListNode<int>>(ListNode<int>{0, nullptr});
+
+  array<shared_ptr<ListNode<int>>, 2> tails = {even_dummy_head, odd_dummy_head};
+  int turn = 0;
+  for(auto iter = L; iter; iter = iter->next){
+    tails[turn]->next = iter;
+    tails[turn] = tails[turn]->next;
+    turn ^= 1;
+  }  
+
+  tails[1]->next = nullptr;
+  tails[0]->next = odd_dummy_head->next;
+
+  return even_dummy_head->next;
 }
 
 int main(int argc, char* argv[]) {

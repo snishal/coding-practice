@@ -5,9 +5,22 @@
 using std::string;
 using std::vector;
 
+void Generate(int left_parens, int right_parens, string s, vector<string>& valid_parens){
+  if(left_parens == 0 && right_parens == 0){
+    valid_parens.emplace_back(s);
+  }
+  if(left_parens > 0){
+    Generate(left_parens - 1, right_parens, s + '(', valid_parens);
+  }
+  if(right_parens > left_parens){
+    Generate(left_parens, right_parens - 1, s + ')', valid_parens);
+  }
+}
+
 vector<string> GenerateBalancedParentheses(int num_pairs) {
-  // TODO - you fill in here.
-  return {};
+  vector<string> valid_parens;
+  Generate(num_pairs, num_pairs, "", valid_parens);
+  return valid_parens;
 }
 
 int main(int argc, char* argv[]) {

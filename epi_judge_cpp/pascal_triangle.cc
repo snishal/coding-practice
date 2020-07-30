@@ -3,8 +3,24 @@
 #include "test_framework/generic_test.h"
 using std::vector;
 vector<vector<int>> GeneratePascalTriangle(int num_rows) {
-  // TODO - you fill in here.
-  return {};
+  if(num_rows == 0)return {};
+  vector<vector<int>> pascal_triangle;
+  vector<int> curr_row;
+  
+  pascal_triangle.push_back({1});
+  for(int i = 1; i < num_rows; i++){
+    vector<int> curr_row;
+
+    curr_row.emplace_back(pascal_triangle.back().front());
+    for(int i = 0; i < pascal_triangle.back().size() - 1; i++){
+      curr_row.emplace_back(pascal_triangle.back()[i] + pascal_triangle.back()[i + 1]);
+    }
+    curr_row.emplace_back(pascal_triangle.back().back());
+
+    pascal_triangle.push_back(curr_row);
+  }
+
+  return pascal_triangle;
 }
 
 int main(int argc, char* argv[]) {

@@ -1,8 +1,19 @@
 #include "test_framework/generic_test.h"
 
 long long Gcd(long long x, long long y) {
-  // TODO - you fill in here.
-  return 0;
+  if(x > y){
+    return Gcd(y, x);
+  }else if(x == 0){
+    return y;
+  }else if(!(x & 1) && !(y & 1)){
+    return Gcd(x >> 1, y >> 1) << 1; 
+  }else if(!(x & 1) && (y & 1)){
+    return Gcd(x >> 1, y);
+  }else if((x & 1) && !(y & 1)){
+    return Gcd(x, y >> 1);
+  }
+  
+  return Gcd(x, y - x);
 }
 
 int main(int argc, char* argv[]) {

@@ -5,7 +5,17 @@
 using std::string;
 
 void ReverseWords(string* s) {
-  // TODO - you fill in here.
+  
+  std::reverse(s->begin(), s->end());
+
+  size_t start = 0, end;
+
+  while((end = s->find(" ", start)) != string::npos){
+    std::reverse(s->begin() + start, s->begin() + end);
+    start = end + 1;
+  }
+  std::reverse(s->begin() + start, s->end());
+
   return;
 }
 string ReverseWordsWrapper(TimedExecutor& executor, string s) {

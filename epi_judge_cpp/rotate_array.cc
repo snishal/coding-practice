@@ -5,7 +5,10 @@
 using std::vector;
 
 void RotateArray(int rotate_amount, vector<int>* A) {
-  // TODO - you fill in here.
+  rotate_amount %= A->size();
+  std::reverse(A->begin(), A->end());
+  std::reverse(A->begin(), A->begin() + rotate_amount);
+  std::reverse(A->begin() + rotate_amount, A->end());
   return;
 }
 vector<int> RotateArrayWrapper(TimedExecutor& executor, vector<int> A,

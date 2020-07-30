@@ -9,13 +9,29 @@
 using std::make_shared;
 using std::vector;
 
+shared_ptr<ListNode<int>> Helper(shared_ptr<ListNode<int>>* node_ref, int l, int r){
+  if(l >= r){
+    return nullptr;
+  }
+  int m = (l + r) / 2;
+  auto left = Helper(node_ref, l, m);
+  auto curr = *node_ref;
+  (*node_ref) = (*node_ref)->next;
+  auto right = Helper(node_ref, m + 1, r);
+
+  curr->prev = left;
+  curr->next = right;
+
+  return curr;  
+}
+
 // Returns the root of the corresponding BST. The prev and next fields of the
 // list nodes are used as the BST nodes left and right fields, respectively.
 // The length of the list is given.
 shared_ptr<ListNode<int>> BuildBSTFromSortedDoublyList(
     shared_ptr<ListNode<int>> l, int length) {
-  // TODO - you fill in here.
-  return nullptr;
+  
+  return Helper(&l, 0, length);
 }
 void CompareVectorAndTree(const shared_ptr<ListNode<int>>& tree,
                           vector<int>::const_iterator& current,

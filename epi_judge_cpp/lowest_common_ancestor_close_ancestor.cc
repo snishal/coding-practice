@@ -1,4 +1,5 @@
 #include <memory>
+#include <unordered_set>
 
 #include "binary_tree_with_parent_prototype.h"
 #include "test_framework/binary_tree_utils.h"
@@ -6,10 +7,29 @@
 #include "test_framework/test_failure.h"
 #include "test_framework/timed_executor.h"
 using std::unique_ptr;
+using std::unordered_set;
 
 BinaryTreeNode<int>* Lca(const unique_ptr<BinaryTreeNode<int>>& node0,
                          const unique_ptr<BinaryTreeNode<int>>& node1) {
-  // TODO - you fill in here.
+  unordered_set<BinaryTreeNode<int>*> candidates;
+  auto *iter0 = node0.get(), *iter1 = node1.get();
+
+  while(iter0 || iter1){
+    if(iter0){
+      if(candidates.emplace(iter0).second == false){
+        return iter0;
+      }
+      iter0 = iter0->parent;
+    }
+
+    if(iter1){
+      if(candidates.emplace(iter1).second == false){
+        return iter1;
+      }
+      iter1 = iter1->parent;
+    }
+  }
+
   return nullptr;
 }
 int LcaWrapper(TimedExecutor& executor,

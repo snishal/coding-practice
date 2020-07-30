@@ -1,5 +1,6 @@
 #include <string>
 #include <unordered_set>
+#include <unordered_map>
 #include <vector>
 
 #include "test_framework/generic_test.h"
@@ -8,6 +9,7 @@
 using std::string;
 using std::unordered_set;
 using std::vector;
+using std::unordered_map;
 
 struct Subarray {
   int start, end;
@@ -15,8 +17,29 @@ struct Subarray {
 
 Subarray FindSmallestSubarrayCoveringSet(
     const vector<string> &paragraph, const unordered_set<string> &keywords) {
-  // TODO - you fill in here.
-  return {0, 0};
+  unordered_map<string, int> keywords_to_cover;
+  for(const string& keyword : keywords){
+    ++keywords_to_cover[keyword];
+  }
+
+  Subarray minWindow = {-1, -1};
+  int remaining = keywords.size();
+  for(int left = 0, right = 0; right < paragraph.size(); ++right){
+    if(keywords.count(paragraph[right]) && --keywords_to_cover[paragraph[right]] == 0){
+      --remaining;
+    }
+    while(remaining == 0){
+      if(minWindow.start == -1 && minWindow.end == -1 || right - left < minWindow.end - minWindow.start){
+        minWindow = {left, right};
+      }
+      if(keywords.count(paragraph[left]) && ++keywords_to_cover[paragraph[left]] > 0){
+        ++remaining;
+      }
+      ++left;
+    }
+  }
+
+  return minWindow;
 }
 int FindSmallestSubarrayCoveringSetWrapper(
     TimedExecutor &executor, const vector<string> &paragraph,
